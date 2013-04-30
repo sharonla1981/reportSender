@@ -6,7 +6,7 @@
  * The followings are the available columns in table 'tbl_client':
  * @property integer $id
  * @property integer $user_id
- * @property integer $client_inner_id
+ * @property integer $client_id
  * @property string $name
  * @property string $email
  * @property string $company
@@ -16,7 +16,8 @@
  * @property integer $update_user_id
  *
  * The followings are the available model relations:
- * @property Send[] $sends
+ * @property User $user
+ * @property Sendto[] $sendtos
  */
 class Client extends ReportSenderActiveRecord
 {
@@ -46,13 +47,14 @@ class Client extends ReportSenderActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, email, company', 'required'),
-			array('user_id, create_user_id, update_user_id', 'numerical', 'integerOnly'=>true),
+                        array('user_id,client_id','application.extensions.uniqueMultiColumnValidator'),
+			array('user_id, client_id, name, email, company', 'required'),
+			array('user_id, client_id, create_user_id, update_user_id', 'numerical', 'integerOnly'=>true),
 			array('name, email, company', 'length', 'max'=>255),
 			array('create_time, update_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, name, email, company, create_time, create_user_id, update_time, update_user_id', 'safe', 'on'=>'search'),
+			array('id, user_id, client_id, name, email, company, create_time, create_user_id, update_time, update_user_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,7 +66,8 @@ class Client extends ReportSenderActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'sends' => array(self::HAS_MANY, 'Send', 'client_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'sendtos' => array(self::HAS_MANY, 'Sendto', 'client_id'),
 		);
 	}
 
@@ -76,7 +79,7 @@ class Client extends ReportSenderActiveRecord
 		return array(
 			'id' => 'ID',
 			'user_id' => 'User',
-                        'client_inner_id' => 'Client',
+			'client_id' => 'Client',
 			'name' => 'Name',
 			'email' => 'Email',
 			'company' => 'Company',
@@ -100,7 +103,7 @@ class Client extends ReportSenderActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
-                $criteria->compare('client_inner_id',$this->client_inner_id);
+		$criteria->compare('client_id',$this->client_id);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('company',$this->company,true);

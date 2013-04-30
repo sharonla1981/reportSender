@@ -36,7 +36,7 @@ class ClientController extends Controller
 				'users'=>array('@'),
 			),*/
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete','create','update'),
+				'actions'=>array('admin','delete','create','update','createFromList'),
                                 'roles'=>array('Admin','clientAdmin')
 				//'users'=>array('admin'),
                                 
@@ -81,6 +81,52 @@ class ClientController extends Controller
 			'model'=>$model,
 		));
 	}
+        
+        /**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
+	public function actionCreateFromList()
+	{
+		$model=new Client;
+
+		// Uncomment the following line if AJAX validation is needed
+		$this->performAjaxValidation($model);
+
+		if(isset($_POST['Client']))
+		{
+                        $csvFile = CUploadedFile::getInstance($model, 'file')->tempName;
+                        $handle = fopen($csvFile,'r');
+                       
+                        
+                        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                            
+                            $data[1] = $this->convert($data[1]); 
+                            //data from csv
+                            $model->client_id = $data[0];
+                            $model->name = $data[1];
+                            $model->email = $data[2];
+                            $model->company = $data[3];
+                            
+                            //data from session
+                            $model->user_id = Yii::app()->user->id;
+                            
+                            $model->save();
+                            
+                            $model = new Client;
+                        }   
+                        fclose($handle); 
+			
+		}
+
+		$this->render('createFromList',array(
+			'model'=>$model,
+		));
+	}
+        
+        public function convert( $str ) {
+            return iconv( "CP1255", "UTF-8", $str );
+        }
 
 	/**
 	 * Updates a particular model.

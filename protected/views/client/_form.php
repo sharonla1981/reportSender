@@ -9,6 +9,7 @@
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'client-form',
 	'enableAjaxValidation'=>true,
+        'htmlOptions' => array('enctype' => 'multipart/form-data'),
 )); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
@@ -16,9 +17,9 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'client_inner_id'); ?>
-		<?php echo $form->textField($model,'client_inner_id'); ?>
-		<?php echo $form->error($model,'client_inner_id'); ?>
+		<?php echo $form->labelEx($model,'client_id'); ?>
+		<?php echo $form->textField($model,'client_id'); ?>
+		<?php echo $form->error($model,'client_id'); ?>
 	</div>
 
 	<div class="row">

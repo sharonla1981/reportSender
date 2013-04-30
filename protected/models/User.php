@@ -15,6 +15,7 @@
  *
  * The followings are the available model relations:
  * @property Report[] $reports
+ * @property Client[] $clients
  */
 class User extends ReportSenderActiveRecord
 {
@@ -68,6 +69,7 @@ class User extends ReportSenderActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'reports' => array(self::HAS_MANY, 'Report', 'user_id'),
+                        'clients' => array(self::HAS_MANY, 'Client', 'user_id'),
 		);
 	}
 
